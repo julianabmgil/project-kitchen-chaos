@@ -89,8 +89,40 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2662077794505004923}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6882163095403435102, guid: d4d950c65ff1d5f4e81c2c723cd2f906,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5707207194933837362}
   m_SourcePrefab: {fileID: 100100000, guid: d4d950c65ff1d5f4e81c2c723cd2f906, type: 3}
+--- !u!4 &1090278737136269324 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 254475099180153567, guid: d4d950c65ff1d5f4e81c2c723cd2f906,
+    type: 3}
+  m_PrefabInstance: {fileID: 912367589084857043}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5992949297059501709 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6882163095403435102, guid: d4d950c65ff1d5f4e81c2c723cd2f906,
+    type: 3}
+  m_PrefabInstance: {fileID: 912367589084857043}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5707207194933837362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5992949297059501709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b509f0cbf4dc23478a5c7e0a1f6583c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  counterTopPoint: {fileID: 1090278737136269324}
+  cookingRecipesSO:
+  - {fileID: 11400000, guid: 34f47993b33ca314eb2f03c366d59f88, type: 2}
+  - {fileID: 11400000, guid: 842ebe63e04ebe44ebb79d80457582e9, type: 2}
 --- !u!4 &7023875493846978981 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7913019095206433654, guid: d4d950c65ff1d5f4e81c2c723cd2f906,
@@ -311,7 +343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d5e6fa16c0e1a84cac1cd59a6c5f07f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultCounterVisual: {fileID: 0}
+  defaultCounterVisual: {fileID: 5707207194933837362}
   visualGameObjects:
   - {fileID: 6781996505029049537}
   - {fileID: 2855025169025355583}
