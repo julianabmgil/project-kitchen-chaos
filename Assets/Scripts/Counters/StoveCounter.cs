@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 
@@ -5,8 +6,27 @@ public class StoveCounter : BaseCounter
 {
     [SerializeField] private CookingRecipeSO[] cookingRecipesSO;
 
-    private int cookingProgress;
+    private float cookingProgress;
+    private CookingRecipeSO cookingRecipeSO;
 
+    private void Update() {
+
+        if (HasKitchenObject()) {
+
+            cookingProgress += Time.deltaTime;
+
+
+            if (cookingProgress > cookingRecipeSO.cookingTimerMax) {
+
+                cookingProgress = 0f;
+                Debug.Log("Cooked!");
+                GetKitchenObject().DestroySelf();
+                KitchenObject.SpawnKitchenObject(cookingRecipeSO.output, this);
+            }
+
+            Debug.Log(cookingProgress);
+        }
+    }
 
     public override void Interact(Player player) {
 
@@ -19,8 +39,10 @@ public class StoveCounter : BaseCounter
                 // Gives the object on the player to the counter
                 player.GetKitchenObject().SetKitchenObjectParent(this);
 
-                cookingProgress = 0;
-                CookingRecipeSO cookingRecipeSO = GetCookingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
+
+                //cookingProgress = 0;
+                cookingRecipeSO = GetCookingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
+
                 //OnProgressChanged?.Invoke(this, new OnProgressChangedEventArgs {
                 //    progressNormalized = (float)cookingProgress / cookingRecipeSO.cookingTimerMax
                 //});
