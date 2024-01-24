@@ -1,3 +1,4 @@
+using System;
 using System.Security.Cryptography;
 using UnityEngine;
 
@@ -40,6 +41,18 @@ public class KitchenObject : MonoBehaviour {
 
         kitchenObjectParent.ClearKitchenObject();
         Destroy(gameObject);
+    }
+
+    public bool TryGetPlate(out PlateKitchenObject plateKitchenObject) {
+
+        if (this is PlateKitchenObject) {
+
+            plateKitchenObject = this as PlateKitchenObject; // casting
+            return true;
+        }
+
+        plateKitchenObject = null;
+        return false;
     }
 
     public static KitchenObject SpawnKitchenObject(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent kitchenObjectParent) {
