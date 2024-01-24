@@ -1,9 +1,15 @@
+using System;
 using UnityEngine;
 
 
 public class StoveCounter : BaseCounter
 {
-    private enum State {
+    public event EventHandler<OnStageChangedEventArgs> OnStateChanged;
+    public class OnStageChangedEventArgs : EventArgs {
+        public State state;
+    }
+
+    public enum State {
         Idle,
         Cooking,
         Cooked,
@@ -45,9 +51,13 @@ public class StoveCounter : BaseCounter
 
                         KitchenObject.SpawnKitchenObject(cookingRecipeSO.output, this);
 
-                        state = State.Cooked;
                         overcookingProgress = 0f;
                         overcookingRecipeSO = GetOvercookingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
+
+                        state = State.Cooked;
+                        OnStateChanged?.Invoke(this, new OnStageChangedEventArgs {
+                            state = state
+                        }); ;
                     }
 
                     break;
@@ -63,7 +73,9 @@ public class StoveCounter : BaseCounter
                         KitchenObject.SpawnKitchenObject(overcookingRecipeSO.output, this);
 
                         state = State.Overcooking;
-                        Debug.Log("Object is overcooked!");
+                        OnStateChanged?.Invoke(this, new OnStageChangedEventArgs {
+                            state = state
+                        }); ;
                     }
 
                     break;
@@ -71,8 +83,6 @@ public class StoveCounter : BaseCounter
                 case State.Overcooking:
                     break;
             }
-
-            Debug.Log(state);
 
         }
     }
@@ -92,8 +102,11 @@ public class StoveCounter : BaseCounter
                 cookingRecipeSO = GetCookingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
 
                 cookingProgress = 0f;
-                state = State.Cooking;
 
+                state = State.Cooking;
+                OnStateChanged?.Invoke(this, new OnStageChangedEventArgs {
+                    state = state
+                });
             }
             else {
                 // The player is not holding anything
@@ -104,7 +117,11 @@ public class StoveCounter : BaseCounter
             if (!player.HasKitchenObject()) {
 
                 this.GetKitchenObject().SetKitchenObjectParent(player);
+
                 state = State.Idle;
+                OnStateChanged?.Invoke(this, new OnStageChangedEventArgs {
+                    state = state
+                }); ;
             }
         }
     }
