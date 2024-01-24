@@ -26,7 +26,7 @@ PrefabInstance:
     - target: {fileID: 7913019095206433654, guid: d4d950c65ff1d5f4e81c2c723cd2f906,
         type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 7913019095206433654, guid: d4d950c65ff1d5f4e81c2c723cd2f906,
         type: 3}
@@ -122,6 +122,7 @@ MonoBehaviour:
   counterTopPoint: {fileID: 1090278737136269324}
   cookingRecipesSO:
   - {fileID: 11400000, guid: 34f47993b33ca314eb2f03c366d59f88, type: 2}
+  overcookingRecipesSO:
   - {fileID: 11400000, guid: 842ebe63e04ebe44ebb79d80457582e9, type: 2}
 --- !u!4 &7023875493846978981 stripped
 Transform:

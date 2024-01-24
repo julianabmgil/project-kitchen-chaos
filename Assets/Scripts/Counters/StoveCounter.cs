@@ -1,30 +1,79 @@
-using System.Collections;
 using UnityEngine;
 
 
 public class StoveCounter : BaseCounter
 {
-    [SerializeField] private CookingRecipeSO[] cookingRecipesSO;
+    private enum State {
+        Idle,
+        Cooking,
+        Cooked,
+        Overcooking,
+    }
 
-    private float cookingProgress;
+    [SerializeField] private CookingRecipeSO[] cookingRecipesSO;
+    [SerializeField] private OvercookingRecipeSO[] overcookingRecipesSO;
+
+    private State state;
+
     private CookingRecipeSO cookingRecipeSO;
+    private OvercookingRecipeSO overcookingRecipeSO;
+    private float cookingProgress;
+    private float overcookingProgress;
+
+
+    private void Start() {
+
+        state = State.Idle;
+    }
 
     private void Update() {
 
         if (HasKitchenObject()) {
 
-            cookingProgress += Time.deltaTime;
+            switch (state) {
 
+                case State.Idle:
+                    break;
 
-            if (cookingProgress > cookingRecipeSO.cookingTimerMax) {
+                case State.Cooking:
 
-                cookingProgress = 0f;
-                Debug.Log("Cooked!");
-                GetKitchenObject().DestroySelf();
-                KitchenObject.SpawnKitchenObject(cookingRecipeSO.output, this);
+                    cookingProgress += Time.deltaTime;
+
+                    if (cookingProgress > cookingRecipeSO.cookingTimerMax) {
+
+                        GetKitchenObject().DestroySelf();
+
+                        KitchenObject.SpawnKitchenObject(cookingRecipeSO.output, this);
+
+                        state = State.Cooked;
+                        overcookingProgress = 0f;
+                        overcookingRecipeSO = GetOvercookingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
+                    }
+
+                    break;
+
+                case State.Cooked:
+
+                    overcookingProgress += Time.deltaTime;
+
+                    if (overcookingProgress > overcookingRecipeSO.overcookingTimerMax) {
+
+                        GetKitchenObject().DestroySelf();
+
+                        KitchenObject.SpawnKitchenObject(overcookingRecipeSO.output, this);
+
+                        state = State.Overcooking;
+                        Debug.Log("Object is overcooked!");
+                    }
+
+                    break;
+
+                case State.Overcooking:
+                    break;
             }
 
-            Debug.Log(cookingProgress);
+            Debug.Log(state);
+
         }
     }
 
@@ -40,12 +89,11 @@ public class StoveCounter : BaseCounter
                 player.GetKitchenObject().SetKitchenObjectParent(this);
 
 
-                //cookingProgress = 0;
                 cookingRecipeSO = GetCookingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
 
-                //OnProgressChanged?.Invoke(this, new OnProgressChangedEventArgs {
-                //    progressNormalized = (float)cookingProgress / cookingRecipeSO.cookingTimerMax
-                //});
+                cookingProgress = 0f;
+                state = State.Cooking;
+
             }
             else {
                 // The player is not holding anything
@@ -54,9 +102,9 @@ public class StoveCounter : BaseCounter
         else {
             // The counter is already holding a kitchen object
             if (!player.HasKitchenObject()) {
-                // The player os not holding anything
-                // Gives the object on the counter to the player
+
                 this.GetKitchenObject().SetKitchenObjectParent(player);
+                state = State.Idle;
             }
         }
     }
@@ -68,17 +116,6 @@ public class StoveCounter : BaseCounter
         return cookingRecipeSO != null;
     }
 
-    private KitchenObjectSO GetOutputForInput(KitchenObjectSO inputKitchenObjectSO) {
-
-        CookingRecipeSO cookingRecipeSO = GetCookingRecipeSOWithInput(inputKitchenObjectSO);
-
-        if (cookingRecipeSO != null) {
-            return cookingRecipeSO.output;
-        }
-
-        return null;
-    }
-
     private CookingRecipeSO GetCookingRecipeSOWithInput(KitchenObjectSO inputKitchenObjectSO) {
 
         foreach (CookingRecipeSO cookingRecipeSO in cookingRecipesSO) {
@@ -86,6 +123,19 @@ public class StoveCounter : BaseCounter
             if (cookingRecipeSO.input == inputKitchenObjectSO) {
 
                 return cookingRecipeSO;
+            }
+        }
+
+        return null;
+    }
+    
+    private OvercookingRecipeSO GetOvercookingRecipeSOWithInput(KitchenObjectSO inputKitchenObjectSO) {
+
+        foreach (OvercookingRecipeSO overcookingRecipeSO in overcookingRecipesSO) {
+
+            if (overcookingRecipeSO.input == inputKitchenObjectSO) {
+
+                return overcookingRecipeSO;
             }
         }
 
