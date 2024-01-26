@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,6 +6,8 @@ public class DeliveryManager : MonoBehaviour {
 
     public static DeliveryManager Instance { get; private set; } // singleton
 
+    public event EventHandler OnRecipeSpawned;
+    public event EventHandler OnRecipeDelivered;
 
     [SerializeField] private RecipeListSO recipeListSO;
 
@@ -30,11 +33,11 @@ public class DeliveryManager : MonoBehaviour {
 
             if (waitingRecipeSOList.Count < waitingRecipesMax) {
 
-                RecipeSO waitingRecipeSO = recipeListSO.recipeSOList[Random.Range(0, recipeListSO.recipeSOList.Count)];
+                RecipeSO waitingRecipeSO = recipeListSO.recipeSOList[UnityEngine.Random.Range(0, recipeListSO.recipeSOList.Count)];
 
-                Debug.Log(waitingRecipeSO.recipeName);
+                waitingRecipeSOList.Add(waitingRecipeSO);
 
-                waitingRecipeSOList.Add(waitingRecipeSO); 
+                OnRecipeSpawned?.Invoke(this, EventArgs.Empty);
             }
         }
     }
@@ -75,8 +78,9 @@ public class DeliveryManager : MonoBehaviour {
                 if (plateContentsMatchesRecipe) {
 
                     // Player delivered a recipe that was on the waiting list
-                    Debug.Log("Nice! Minus one order to deliver!");
                     waitingRecipeSOList.RemoveAt(i);
+
+                    OnRecipeDelivered?.Invoke(this, EventArgs.Empty);
 
                     return;
                 }
@@ -85,6 +89,10 @@ public class DeliveryManager : MonoBehaviour {
 
         // No matches found
         // The recipe the player delivered was not on the waiting list
-        Debug.Log("Oops... no one ordered this dish");
+    }
+
+    public List<RecipeSO> GetWaitingRecipeSOList() {
+
+        return waitingRecipeSOList;
     }
 }
