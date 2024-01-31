@@ -5,6 +5,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent {
 
     public static Player Instance { get; private set; } // O C# define o campo referente automaticamente "por baixo dos panos"
 
+    public event EventHandler OnObjectPickup;
     public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
     public class OnSelectedCounterChangedEventArgs : EventArgs {
         public BaseCounter selectedCounter;
@@ -154,22 +155,32 @@ public class Player : MonoBehaviour, IKitchenObjectParent {
     }
 
     public Transform GetKitchenObjectFollowTransform() {
+
         return kitchenObjectHoldPoint;
     }
 
     public KitchenObject GetKitchenObject() {
+
         return kitchenObject;
     }
 
     public void SetKitchenObject(KitchenObject kitchenObject) {
+
         this.kitchenObject = kitchenObject;
+
+        if (kitchenObject != null) {
+
+            OnObjectPickup?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public void ClearKitchenObject() {
+
         kitchenObject = null;
     }
 
     public bool HasKitchenObject() {
+
         return kitchenObject != null;
     }
 }

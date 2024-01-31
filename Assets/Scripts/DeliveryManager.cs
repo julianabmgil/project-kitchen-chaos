@@ -8,6 +8,9 @@ public class DeliveryManager : MonoBehaviour {
 
     public event EventHandler OnRecipeSpawned;
     public event EventHandler OnRecipeDelivered;
+    public event EventHandler OnRecipeSucceed;
+    public event EventHandler OnRecipeFailed;
+
 
     [SerializeField] private RecipeListSO recipeListSO;
 
@@ -81,6 +84,7 @@ public class DeliveryManager : MonoBehaviour {
                     waitingRecipeSOList.RemoveAt(i);
 
                     OnRecipeDelivered?.Invoke(this, EventArgs.Empty);
+                    OnRecipeSucceed?.Invoke(this, EventArgs.Empty);
 
                     return;
                 }
@@ -89,6 +93,7 @@ public class DeliveryManager : MonoBehaviour {
 
         // No matches found
         // The recipe the player delivered was not on the waiting list
+        OnRecipeFailed?.Invoke(this, EventArgs.Empty);
     }
 
     public List<RecipeSO> GetWaitingRecipeSOList() {

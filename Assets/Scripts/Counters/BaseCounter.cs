@@ -1,6 +1,10 @@
+using System;
 using UnityEngine;
 
 public class BaseCounter : MonoBehaviour, IKitchenObjectParent {
+
+    // Since we can have multiple counters, a static event allows for one single subscription
+    public static event EventHandler OnAnyObjectDrop;
 
     [SerializeField] private Transform counterTopPoint;
 
@@ -30,6 +34,11 @@ public class BaseCounter : MonoBehaviour, IKitchenObjectParent {
     public void SetKitchenObject(KitchenObject kitchenObject) {
 
         this.kitchenObject = kitchenObject;
+
+        if (kitchenObject != null) {
+
+            OnAnyObjectDrop?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public void ClearKitchenObject() {
